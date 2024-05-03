@@ -3,11 +3,19 @@ const server = express();
 const bodyParser = require('body-parser');
 const cors = require("cors");
 
+const cLoader = require("./classes/configLoader");
+const config = new cLoader().getCfg();
+
+
 const OAuth = require("./classes/auth");
 const authenticator = new OAuth();
 
 const SQL = require("./classes/mysql");
 const database = new SQL(config);
+
+// add body parser middleware for api requests
+server.use(bodyParser.urlencoded({ extended: true, limit: '5mb' }));
+server.use(bodyParser.json({ limit: '5mb' }));
 
 server.use(cors());
 
@@ -21,6 +29,7 @@ server.use((req, res, next) => {
     if (!req.authenticator) req.authenticator = authenticator;
     if (!req.utils) req.utils = require("./classes/utils");
     if (!req.database) req.database = database.getConnection();
+    if (!req.config) req.config = config;
 
     // check if database is connected
     if (!req.database) {
@@ -32,4 +41,4 @@ server.use((req, res, next) => {
     next();
 })
 
-server.listen(4616, () => console.log("API online and listening on port", 4616));
+server.listen(config.port, () => console.log("API online and listening on port", config.port));
