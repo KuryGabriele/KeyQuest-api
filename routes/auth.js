@@ -46,4 +46,22 @@ router.post("/login", (req, res) => {
     });
 });
 
+router.get("/validate", (req, res) => {
+    const token = req.headers.authorization;
+    const result = req.authenticator.getUserId(token);
+
+    //get the username from the id
+    if (result) {
+        req.database.query("SELECT id, username FROM users WHERE id = ?", [result], (err, result, fields) => {
+            if (err) console.error(err);
+            if (err) return res.status(400).send({ message: "You messed up the request." });
+            if (result && result.length > 0) {
+                return res.status(200).json({ id: result[0].id, username: result[0].username });
+            }
+        });
+    } else {
+        res.status(401).send({ message: "Unauthorized" });
+    }
+});
+
 module.exports = router;
