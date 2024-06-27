@@ -56,7 +56,11 @@ router.get("/validate", (req, res) => {
             if (err) console.error(err);
             if (err) return res.status(400).send({ message: "You messed up the request." });
             if (result && result.length > 0) {
-                return res.status(200).json({ id: result[0].id, username: result[0].username });
+                return res.status(200).json({ 
+                    id: result[0].id, 
+                    username: result[0].username, 
+                    token: token, 
+                    tokenExpire: -1});
             }
         });
     } else {
