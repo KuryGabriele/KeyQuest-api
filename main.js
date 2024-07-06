@@ -42,5 +42,6 @@ server.use((req, res, next) => {
 })
 
 server.use("/api/auth", require("./routes/auth"));
+server.use("/api/levels", require("./routes/levels"));
 
 server.listen(config.port, () => console.log("API online and listening on port", config.port));
