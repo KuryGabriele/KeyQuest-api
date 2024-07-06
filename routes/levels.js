@@ -15,13 +15,18 @@ router.get("/", fullAuthenticationMiddleware, (req, res) => {
         if (err) return res.status(500).send({ message: "Something went wrong." });
 
         const plate = result[0];
-        return res.status(200).json({
-            id: plate.id,
-            displayName: plate.displayName,
-            difficulty: plate.difficulty,
-            bestScore: plate.score,
-            notes: plate.notes
+        var jsonOut = [];
+        result.forEach((plate) => {
+            jsonOut.push({
+                id: plate.id,
+                displayName: plate.displayName,
+                difficulty: plate.difficulty,
+                bestScore: plate.score,
+                notes: plate.notes
+            });
         });
+        
+        return res.status(200).json(jsonOut);
     });
 });
 
